@@ -12,3 +12,9 @@ MIDDLEWARE.insert(2, "whitenoise.middleware.WhiteNoiseMiddleware")
 DATABASES["default"] = dj_database_url.parse(
     os.getenv("DATABASE_URL"), conn_max_age=600
 )
+
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [
+
+]

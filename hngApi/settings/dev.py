@@ -7,3 +7,9 @@ DATABASES["default"] = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 
+
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [
+
+]
