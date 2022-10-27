@@ -1,0 +1,1 @@
+web: gunicorn hngApi.wsgi --preload --log-file -
