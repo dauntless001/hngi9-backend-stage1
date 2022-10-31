@@ -10,6 +10,7 @@ class IndexView(APIView):
         }
         headers = {
             'accept' : '*',
-            'Content-Type' : 'application/json'
+            'Content-Type' : 'application/json',
+            'Access-Control-Allow-Origin' : '*',
         }
         return Response(data, status=status.HTTP_200_OK, headers=headers)
