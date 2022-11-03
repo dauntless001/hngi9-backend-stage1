@@ -25,26 +25,31 @@ class IndexView(APIView):
 class ArithmeticView(APIView):
     serializer_class = ArithmeticSerializer
 
+    def get_operations(self, operand):
+        operation = {
+            'addition' : 'addition',
+            'subtraction' : 'subtraction',
+            'multiplication' : 'multiplication'
+        }
+        return operation[operand]
+
 
 
     def post(self, request, format=None):
         json = request.POST
-        result = 0
         x = request.POST['x']
         y = request.POST['y']
         operation_type = request.POST['operation_type']
-        if operation_type in ['addition', 'add', '+', 'plus']:
+        if operation_type == 'addition':
             result = int(x) + int(y)
-            operation_type = 'addition'
-        elif operation_type in ['subtraction', 'subtract', '-', 'minus']:
+        elif operation_type == 'subtraction':
             result = int(x) - int(y)
-            operation_type = 'subtraction'
-        elif operation_type in ['multiplication', 'multiply', '*', 'times']:
+        elif operation_type == 'multiplication':
             result = int(x) * int(y)
             operation_type = 'multiplication'
         data = {
             'slackUsername':'omatanmi',
-            'operation_type' : operation_type,
+            'operation_type' : self.get_operations(operation_type),
             'result' : result
         }
         return Response(data, status=status.HTTP_200_OK, headers=headers)
