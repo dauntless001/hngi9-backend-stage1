@@ -42,8 +42,6 @@ class ArithmeticView(APIView):
         elif operation_type in ['multiplication', 'multiply', '*', 'times']:
             result = int(x) * int(y)
             operation_type = 'multiplication'
-        else:
-            result = f'Invalid Operation type : {operation_type}'
         data = {
             'slackUsername':'omatanmi',
             'operation_type' : operation_type,
