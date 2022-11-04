@@ -46,9 +46,9 @@ class ArithmeticView(APIView):
 
 
     def post(self, request, format=None):
-        x = request.POST['x']
-        y = request.POST['y']
-        operation_type = request.POST['operation_type']
+        x = request.POST.get('x', '')
+        y = request.POST.get('y', '')
+        operation_type = request.POST.get('operation_type', '')
         data = {
             'slackUsername':'omatanmi',
             'operation_type' : None,
