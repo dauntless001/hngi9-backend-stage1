@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from hngApi.api.serializers import ArithmeticSerializer
-import re
+import re, enum
 
 
 
@@ -22,6 +22,12 @@ class IndexView(APIView):
         
         return Response(data, status=status.HTTP_200_OK, headers=headers)
 
+class Operator(enum.Enum):
+    addition = 'addition'
+    subtraction = 'subtraction'
+    multiplication = 'multiplication'
+
+
 class ArithmeticView(APIView):
     serializer_class = ArithmeticSerializer
 
@@ -32,19 +38,20 @@ class ArithmeticView(APIView):
         result = 0
         x = request.POST['x']
         y = request.POST['y']
+        operator = None
         operation_type = request.POST['operation_type']
-        if operation_type == 'addition':
+        if operation_type == Operator.addition.name:
             result = int(x) + int(y)
-            operation_type = 'addition'
-        elif operation_type == 'subtraction':
+            operator = Operator.addition
+        elif operation_type == Operator.subtraction.name:
             result = int(x) - int(y)
-            operation_type = 'subtraction'
-        elif operation_type == 'multiplication':
+            operator = Operator.subtraction
+        elif operation_type == Operator.multiplication.name:
             result = int(x) * int(y)
-            operation_type = 'multiplication'
+            operator = Operator.multiplication
         data = {
             'slackUsername':'omatanmi',
-            'operation_type' : operation_type,
+            'operation_type' : operator.value,
             'result' : result
         }
         return Response(data, status=status.HTTP_200_OK, headers=headers)
