@@ -59,8 +59,10 @@ class ArithmeticView(APIView):
             solution = self.process_command(ops['operation_type'], ops['x'], ops['y'])
             data['result'] = solution['result']
             data['operation_type'] = solution['operator'].value
-        else:
+        elif operation_type:
             solution = self.process_command(operation_type, x, y)
             data['result'] = solution['result']
             data['operation_type'] = solution['operator'].value
+        else:
+            data['result'] = 'Invalid Operation Type'
         return Response(data, headers=headers)
