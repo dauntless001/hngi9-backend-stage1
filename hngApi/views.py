@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from hngApi.api.funcs import ADDITION, MULTIPLICATION, SUBTRACTION, translate_text
 from hngApi.api.serializers import ArithmeticSerializer
 import re, enum
 
@@ -31,27 +32,35 @@ class Operator(enum.Enum):
 class ArithmeticView(APIView):
     serializer_class = ArithmeticSerializer
 
+    def process_command(self, operation_type, x, y):
+        if operation_type in ADDITION:
+            result = int(x) + int(y)
+            operator = Operator.addition
+        elif operation_type in SUBTRACTION:
+            result = int(x) - int(y)
+            operator = Operator.subtraction
+        elif operation_type in MULTIPLICATION:
+            result = int(x) * int(y)
+            operator = Operator.multiplication
+        return {'result':result, 'operator':operator}
 
 
     def post(self, request, format=None):
-        json = request.POST
-        result = 0
         x = request.POST['x']
         y = request.POST['y']
-        operator = None
         operation_type = request.POST['operation_type']
-        if operation_type == Operator.addition.name:
-            result = int(x) + int(y)
-            operator = Operator.addition
-        elif operation_type == Operator.subtraction.name:
-            result = int(x) - int(y)
-            operator = Operator.subtraction
-        elif operation_type == Operator.multiplication.name:
-            result = int(x) * int(y)
-            operator = Operator.multiplication
         data = {
             'slackUsername':'omatanmi',
-            'operation_type' : operator.value,
-            'result' : result
+            'operation_type' : None,
+            'result' : 0
         }
-        return Response(data, status=status.HTTP_200_OK, headers=headers)
+        if len(operation_type.split()) > 1:
+            ops = translate_text(operation_type)
+            solution = self.process_command(ops['operation_type'], ops['x'], ops['y'])
+            data['result'] = solution['result']
+            data['operation_type'] = solution['operator'].value
+        else:
+            solution = self.process_command(operation_type, x, y)
+            data['result'] = solution['result']
+            data['operation_type'] = solution['operator'].value
+        return Response(data, headers=headers)
